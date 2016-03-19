@@ -1,0 +1,216 @@
+ARCHITECTURE(ADSP-21375)
+
+//   Note: The SHARC 21375 has 0.5 Megabit RAM and 2 Megabit ROM in total.
+
+//   ADSP-21375 Memory Map:
+//   ------------------------------------------------------------------------
+
+//                    0x0000 0000 to 0x0003 FFFF  IOP Regs
+
+//   -----------------------------------------------------------------------
+//       Long word (64-bit) space.  Address range 0x0004 0000 to 0x0007 FFFF
+//   -----------------------------------------------------------------------
+
+//   Block 0   0x0004 0000 to 0x0004 3FFF  Long word (64) Space   (1 Mb ROM)
+//   Block 0   0x0004 4000 to 0x0004 BFFF  Reserved address space (2 Mb)
+//   Block 0   0x0004 C000 to 0x0004 C7FF  Long word (64) Space   (0.12 Mb RAM)
+//   Block 0   0x0004 C800 to 0x0004 FFFF  Reserved address space (0.87 Mb)
+
+//   Block 1   0x0005 0000 to 0x0005 3FFF  Long word (64) Space   (1 Mb ROM)
+//   Block 1   0x0005 4000 to 0x0005 BFFF  Reserved address space (2 Mb)
+//   Block 1   0x0005 C000 to 0x0005 C7FF  Long word (64) Space   (0.12 Mb RAM)
+//   Block 1   0x0005 C800 to 0x0005 FFFF  Reserved address space (0.87 Mb)
+
+//   Block 2   0x0006 0000 to 0x0006 07FF  Long word (64) Space   (0.12 Mb RAM)
+//   Block 2   0x0006 0800 to 0x0006 1FFF  Reserved address space (0.37 Mb)
+//   Block 2   0x0006 2000 to 0x0006 FFFF  Reserved address space (3.5 Mb)
+
+//   Block 3   0x0007 0000 to 0x0007 07FF  Long word (64) Space   (0.12 Mb RAM)
+//   Block 3   0x0007 0800 to 0x0007 1FFF  Reserved address space (0.37 Mb)
+//   Block 3   0x0007 2000 to 0x0007 FFFF  Reserved address space (3.5 Mb)
+
+//   The 48 bit space (0x0008 0000 - 0x000F 5554) section describes what this 
+//   address range looks like to an instruction that retrieves 48 bit memory.  
+ 
+//   ------------------------------------------------------------------------
+//       48-bit space. Address range 0x0008 0000 to 0x000F 5554
+//   ------------------------------------------------------------------------
+
+//   Block 0   0x0008 0000 to 0x0008 5554  Normal word (48) Space (1 Mb ROM)
+//   Block 0   0x0008 5555 to 0x0008 FFFF  Reserved address space (2 Mb)
+//   Block 0   0x0009 0000 to 0x0009 0AAA  Normal word (48) Space (0.13 Mb RAM)
+//   Block 0   0x0009 0AAB to 0x0009 5554  Reserved address space (0.88 Mb)
+
+//   Block 1   0x000A 0000 to 0x000A 5554  Normal word (48) Space (1 Mb ROM)
+//   Block 1   0x000A 5555 to 0x000A FFFF  Reserved address space (2 Mb)
+//   Block 1   0x000B 0000 to 0x000B 0AAA  Normal word (48) Space (0.13 Mb RAM)
+//   Block 1   0x000B 0AAB to 0x000B 5554  Reserved address space (0.88 Mb)
+
+//   Block 2   0x000C 0000 to 0x000C 0AAA  Normal word (48) Space (0.13 Mb RAM)
+//   Block 2   0x000C 0AAB to 0x000C 3FFF  Reserved address space (0.62 Mb)
+//   Block 2   0x000D 4000 to 0x000D 5554  Reserved address space (0.25 Mb)
+
+//   Block 3   0x000E 0000 to 0x000E 0AAA  Normal word (48) Space (0.13 Mb RAM)
+//   Block 3   0x000E 0AAB to 0x000E 3FFF  Reserved address space (0.62 Mb)
+//   Block 3   0x000F 4000 to 0x000F 5554  Reserved address space (0.25 Mb)
+
+//   The 32 bit space (0x0008 0000 - 0x000F FFFF) section describes what this 
+//   address range looks like to an instruction that retrieves 32 bit memory.
+
+//   ------------------------------------------------------------------------
+//       Normal word (32-bit) space. Address range 0x0008 0000 to 0x000F FFFF
+//   ------------------------------------------------------------------------
+
+//   Block 0   0x0008 0000 to 0x0008 7FFF  Normal word (32) Space (1 Mb ROM)
+//   Block 0   0x0008 8000 to 0x0009 7FFF  Reserved address space (2 Mb)
+//   Block 0   0x0009 8000 to 0x0009 8FFF  Normal word (32) Space (0.12 Mb RAM)
+//   Block 0   0x0009 9000 to 0x0009 FFFF  Reserved address space (0.87 Mb)
+
+//   Block 1   0x000A 0000 to 0x000A 7FFF  Normal word (32) Space (1 Mb ROM)
+//   Block 1   0x000A 8000 to 0x000B 7FFF  Reserved address space (2 Mb)
+//   Block 1   0x000B 8000 to 0x000B 8FFF  Normal word (32) Space (0.12 Mb RAM)
+//   Block 1   0x000B 9000 to 0x000B FFFF  Reserved address space (0.87 Mb)
+
+//   Block 2   0x000C 0000 to 0x000C 0FFF  Normal word (32) Space (0.12 Mb RAM)
+//   Block 2   0x000C 1000 to 0x000C 3FFF  Reserved address space (0.37 Mb)
+//   Block 2   0x000C 4000 to 0x000D FFFF  Reserved address space (3.5 Mb)
+
+//   Block 3   0x000E 0000 to 0x000E 0FFF  Normal word (32) Space (0.12 Mb RAM)
+//   Block 3   0x000E 1000 to 0x000E 3FFF  Reserved address space (0.37 Mb)
+//   Block 3   0x000E 4000 to 0x000F FFFF  Reserved address space (3.5 Mb)
+
+//   -----------------------------------------------------------------------
+//       Short word (16-bit) space. Address range 0x0010 0000 to 0x001F FFFF
+//   -----------------------------------------------------------------------
+
+//   Block 0   0x0010 0000 to 0x0010 FFFF  Short word (16) Space  (1 Mb ROM)
+//   Block 0   0x0011 0000 to 0x0012 FFFF  Reserved address space (2 Mb)
+//   Block 0   0x0013 0000 to 0x0013 1FFF  Short word (16) Space  (0.13 Mb RAM)
+//   Block 0   0x0013 2000 to 0x0013 FFFF  Reserved address space (0.75 Mb)
+
+//   Block 1   0x0014 0000 to 0x0014 FFFF  Short word (16) Space  (1 Mb ROM)
+//   Block 1   0x0015 0000 to 0x0016 FFFF  Reserved address space (2 Mb)
+//   Block 1   0x0017 0000 to 0x0017 1FFF  Short word (16) Space  (0.13 Mb RAM)
+//   Block 1   0x0017 2000 to 0x0017 FFFF  Reserved address space (0.75 Mb)
+
+//   Block 2   0x0018 0000 to 0x0018 1FFF  Short word (16) Space  (0.13 Mb RAM)
+//   Block 2   0x0018 2000 to 0x0018 7FFF  Reserved address space (0.37 Mb)
+//   Block 2   0x0018 8000 to 0x001B FFFF  Reserved address space (3.5 Mb)
+
+//   Block 3   0x001C 0000 to 0x001C 1FFF  Short word (16) Space  (0.13 Mb RAM)
+//   Block 3   0x001C 2000 to 0x001C 7FFF  Reserved address space (0.37 Mb)
+//   Block 3   0x001C 8000 to 0x001F FFFF  Reserved address space (3.5 Mb)
+
+//   This linker description file allocates:
+//         Internal 0x100  48 bit words of run-time header in memory block 0
+//                  0x100  48 bit words of initialization code in memory block 0
+//                  0xD0   48 bit words for use by interrupt code
+//                  0x1285 48 bit words of C code space in memory block 0
+//
+//                  C++: 0x1200, or C: 0x1300 32 bit words of DM data space in
+//                  memory block 1
+//
+//                  0xD00 32 bit words of C stack space in memory block 1
+//
+//                  0x2000 32 bit words of C PM data space in memory block 2
+//
+//                  0x2000 32 bit words of C heap space in memory block 3
+
+#ifndef __NO_STD_LIB
+SEARCH_DIR( $ADI_DSP/213xx/lib )
+#endif
+
+$LIBRARIES = ;
+
+
+$OBJECTS = $COMMAND_LINE_OBJECTS;
+
+MEMORY
+{
+	seg_rth		{ TYPE(PM RAM) START(0x00090000) END(0x0009000F) WIDTH(48) }//block0
+	seg_pmco	{ TYPE(PM RAM) START(0x00090010) END(0x00090AA9) WIDTH(48) }
+	seg_dmda	{ TYPE(PM RAM) START(0x000C0000) END(0x000C0FFF) WIDTH(32) }//block2
+	seg_dmda1	{ TYPE(PM RAM) START(0x000E0000) END(0x000E0FFF) WIDTH(32) }//block3
+	seg_dm32	{ TYPE(DM RAM) START(0x000B8000) END(0x000B8CFF) WIDTH(32) }//block1
+	seg_stack	{ TYPE(DM RAM) START(0x000B8D00) END(0x000B8FFF) WIDTH(32) }
+	seg_sdram	{ TYPE(DM RAM) START(0x00200000) END(0x005FFFFF) WIDTH(16) }
+	seg_flash	{ TYPE(DM RAM) START(0x04000000) END(0x083FFFFF) WIDTH(8) }
+}
+
+
+PROCESSOR p0
+{
+#ifdef IDDE_ARGS
+    RESOLVE(___argv_string, ARGV_START)
+#endif
+
+	KEEP( _main,___lib_end_of_heap_descriptions )
+
+	LINK_AGAINST( $COMMAND_LINE_LINK_AGAINST)
+	OUTPUT( $COMMAND_LINE_OUTPUT_FILE )
+
+	SECTIONS
+	{
+		// .text output section
+		seg_rth
+        {
+            INPUT_SECTIONS( $OBJECTS(seg_rth) $LIBRARIES(seg_rth))
+        } > seg_rth
+
+//		seg_init
+//		{
+//			ldf_seginit_space = . ;
+//			INPUT_SECTIONS( $OBJECTS(seg_init) $LIBRARIES(seg_init))
+//		} > seg_init
+
+		seg_pmco
+		{
+			INPUT_SECTIONS( $OBJECTS(seg_pmco) $LIBRARIES(seg_pmco))
+		} > seg_pmco
+
+		.bss ZERO_INIT
+		{
+			INPUT_SECTIONS( $OBJECTS(.bss) $LIBRARIES(.bss))
+		} > seg_dmda
+
+		seg_dmda
+		{
+			INPUT_SECTIONS( $OBJECTS(seg_dmda) $LIBRARIES(seg_dmda))
+		} > seg_dmda
+
+		seg_dmda1
+		{
+			INPUT_SECTIONS( $OBJECTS(seg_dmda1) $LIBRARIES(seg_dmda1))
+		} > seg_dmda1
+
+		stackseg
+		{
+			// allocate a stack for the application
+			ldf_stack_space = .;
+			ldf_stack_length = MEMORY_SIZEOF(seg_stack);
+		} > seg_stack
+
+//		heap
+//		{
+//			// allocate a heap for the application
+//			ldf_heap_space = .;
+//			ldf_heap_length = MEMORY_SIZEOF(seg_heap);
+//			ldf_heap_end = ldf_heap_space + ldf_heap_length - 1; 
+//		} > seg_heap
+        
+		seg_flash
+		{
+			INPUT_SECTIONS($OBJECTS(seg_flash) $LIBRARIES(seg_flash))
+		} > seg_flash
+
+		seg_dm32
+		{
+			INPUT_SECTIONS($OBJECTS(seg_dm32) $LIBRARIES(seg_dm32))
+		} > seg_dm32
+
+		seg_sdram
+		{
+			INPUT_SECTIONS($OBJECTS(seg_sdram) $LIBRARIES(seg_sdram))
+		} > seg_sdram
+	}
+}

@@ -1,0 +1,54 @@
+ 		串口指令对比	版本:0002	更新日期:2010-12-7	
+ 					
+ 序号	指令功能说明	原2600指令格式	对应的应答	21375上的格式	对应的应答
+1	保存参数(IDSXXX
+	其中(IDS000有特殊的功能,可以将当前的参数保存到首个没用的空间,
+	序号从小到大排列.若序号用完后会返回(IDe12,且执行完该指令后,被保存过的
+	程序号做为当前的程序号.并在机器面板上会显示.内似于记事本的保存功能.
+
+2	获取程序信息(IDIXXX
+	注(ID000为非法指令将返 (IDe11,程序超过50会返回(IDe10 获取不存在的程序号信息会返回 (IDe11	(IDIXXX	(IDIXXX	(IDI000会返回一组程序号.
+
+(IDCE---解锁 (IDCD----上锁, 返回 (IDC
+
+(IDGXXX  (IDG000 返回 (IDe11 程序号超过50返回 (IDe10 删除不存在的程序返回 (IDe11	删除成功返回 (IDXXX	(IDXXX	目前都返回(ID001
+
+(ID$040XXYYY	XX表示通道 YYY表示信号源 000->Mix 001->IN1 0002 ->IN2
+(ID$054AAABBBCCCDDDEEE
+(ID$038CXXXXXX	C表示通道 C=1 IN1 ; C=2 IN2  XXXXXX 表示延迟参数
+(ID$026CXXX	C表示通道  C=1 IN1; C=2 IN2 ; XXX=0 PEQ OFF; XXX=1  PEQ ON
+(ID$020CXXX     C表示通道  C=1 IN1; C=2 IN2 ; XXX=0 PEQ Link off; XXX=1  PEQ Link ON
+(ID$021CNNTTTFFFLLLQQQ  C-通道(1~2) NN-PEQ序号 TTT-PEQ类型 FFF-频率 LLL-幅度 QQQ-Q值
+(ID$022CNNFFF    C-通道(1~2)  NN-PEQ序号   FFF频率(1~121)
+(ID$023CNNLLL    C-通道(1~2)  NN-PEQ序号   LLL幅度(0~48)
+(ID$024CNNQQQ    C-通道(1~2)  NN-PEQ序号   QQQ Q值(0~72)
+(ID$025CGGG      C-通道(1~2)  GGG 增益(1~205) 1-> -90dB    205-> +12dB
+(ID$027CMMM      C-通道(1~2)  MMM=1 开启静音   MMM=0 关闭静音
+(ID$051CXXXXXX   C-通道(0~5)  0->A  1->B… XXXXXX 延迟参数
+(ID$041CXXX      C-通道(0~5) XXX(0~11) 滤波器类型 000->-12dB/butterworth...
+(ID$042CFFF      C-通道(0~5) FFF(0~121) 0关闭
+(ID$043CXXX      C-通道(0~5) XXX(0~11) 滤波器类型 000->-12dB/butterworth...
+(ID$042CFFF      C-通道(0~5) FFF(1~122) 122关闭
+(ID$045CNNTTTFFFLLLQQQ  C-通道(0~5) NN-PEQ序号(0~2) TTT-PEQ类型 FFF-频率
+	LLL-幅度 QQQ-Q值
+(ID$046CNNFFF    C-通道(0~5)  NN-PEQ序号(0~2)   FFF频率(1~121)
+(ID$023CNNLLL    C-通道(0~5)  NN-PEQ序号(0~2)   LLL幅度 (0~48)
+(ID$024CNNQQQ    C-通道(0~5)  NN-PEQ序号(0~2)   QQQ Q值 (0~72)
+(ID$049CGGG      C-通道(0~5)  GGG 增益(1~205)
+(ID$050CXXX
+	XXX压限参数(0~53) 0->OFF 1->2dBFS 2->1.5dBFS …5->0 dBFS  53-> -24dBFS
+(ID$053CXXX		000->开启静音  111->关闭静音
+(IDX	(IDX+设备信息(256Byte)共260个字节		
+(IDbye	(IDbye		
+(IDME	(IDM+48个字节的电平信息		
+(IDhello	(IDhello		
+(IDQ000	(IDQ+系统参数 共1030个字节		
+(IDP+参数   共1022个字节	(IDP000		
+
+程序保护 (IDWNNNX    NNN程序号(1~50)  X=D 保护; X=E 取消保护
+当某一程序号被保护后可以调用不能删除,若此时再发送SAVE命令会返回 (IDe13
+发送(IDGNNN也会返回 (IDe13	(IDWNNN
+
+程序锁定 (IDLNNNL    NNN程序号(1~50)  L=D 保护    L=E 取消保护  当某一程序号锁定后可以删除,且在机器面板上禁止显示该程序号,但在上位机中仍可以调用.
+
+程序调用 (IDRNNN    NNN程序号(1~50)   (IDRNNN

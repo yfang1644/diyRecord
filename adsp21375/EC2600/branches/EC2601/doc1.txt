@@ -1,0 +1,125 @@
+
+下面是功能列表(标记"//"行尚未完成)。个别参数选择和SRP-F300不一致，
+主要是为了程序方便统一。如果是和上位机软件兼容的原因要求更改，目前
+已完成的功能修改起来都没问题。
+
+写FLASH部分还不完善。原打算开机读flash取ID并检查Up/Down键实现面板
+锁定，但考虑到flash中还没有有效程序，读取ID的值不确定，因此暂将本机
+ID定为01。
+
+
+(IDhello，联机，禁用面板
+(IDbye，脱机，面板可用
+(IDCE or (IDCD，禁用或启用面板
+(IDK，返回面板使能状态
+(IDX, 获取设备信息，返回“EC2600 on ADI-21375”共64字节（后面用空格填充）
+(IDY, 设置设备信息，最多64字节，写入Flash的设备信息扇区
+(IDA, 读取版本，返回“Ver.0.15 Nov.01 2010”共64字节（后面用空格填充）
+(IDN, 更新检查（返回(IDNC,不知道作用是什么）
+(IDRxxx, 程序调入，从flash读取程序(000-050) 
+(IDSxxx, 程序存入FLASH（000-050,001不得覆盖）
+(IDGxxx, 程序删除(000-050,001不得删除)
+// .(IDQ, Program Data Request Command
+// .(IDP, Program Data Set Command
+// .(IDI, Program Information Data Request
+// .(IDJ, Program Information Data Set
+// .(IDLE or (IDLD, Recall Lock Enable/Disable
+// .(IDWE or (IDWD, Protect Enable/Disable
+// .(IDME, Level Information Start/Stop 
+// .(ID%xxxx, Program Parameter Value Request
+
+参数设置功能：
+
+
+(ID$001xxx，信号源选择(000-模拟输入，001-正弦波发生器)
+// .(ID$002xxx，信号发生器类型选择(000-粉红噪声，001-正弦波)
+// .(ID$003 pink noise level
+(ID$004CVVV 正弦波频率。C为通道（1、2。0为两通道绑定参数），
+	V为1/12倍频程编号,VVV=001-121
+(ID$005CVVV 正弦波幅度。C为通道（1、2。0为两通道绑定参数），
+	V为dB编号 VVV=000-205
+	以上两个参数，SRP-F300没有通道选择，正弦信号为mono。
+	
+// .(ID$006VVV 信号发生器静音
+// .(ID$010 EQ Mode (PEQ or GEQ,总是PEQ)
+// .(ID$011 GEQ Link
+// .(ID$012 GEQ Parameter
+// .(ID$013 GEQ Level
+// .(ID$014 GEQ On/Off
+(ID$020CVVV PEQ Link ON/OFF
+(ID$021CBBTTTFFFLLLQQQ, PEQ参数，C=0,1,2(通道), BB=00-10(Band)
+	TTT(type), FFF(frequency), LLL(level), QQQ(Q)
+(ID$022CBBFFF，PEQ 频率
+(ID$023CBBLLL，PEQ Level（仅对peaking和shelving有效）
+(ID$024CBBQQQ，PEQ Q值（仅对peaking/notch和bandpass有效）
+(ID$025CLLL，PEQ 总电平Level
+(ID$026CVVV，PEQ On/Off设置。
+// .(ID$037，Compressor Link Mode,仍不明确
+(ID$027CVVV，原SRP-F300 用于 Compressor On/Off
+	现挪作输入静音设置(VVV=000表示静音，和其他mute值含义统一。
+	道理上应该用000表示静音无效。)
+// .(ID$032，Comp Attack
+// .(ID$033，Comp Release
+(ID$034CVVV，Compressor Threshold（VVV=dB编号）
+(ID$035CVVV，Compresor Ratio（VVV=000-100）
+	以上两个功能中，C=0,1,2用于输入，其中0表示两输入通道绑定操作。
+	C=3-8用于输出模块的A-F。设置压缩门限和压缩率。后面的(ID$050暂不使用。
+
+// .(ID$036，Compressor Gain，跟系统总放大是什么关系？
+// .(ID$028  Compressor Side EQ Type
+// .(ID$029  Compressor Side EQ Freq 
+// .(ID$030  Compressor Side EQ Level
+// .(ID$031  Compressor Side EQ Q
+(ID$038CVVVVVV，Master Delay（输入延迟）
+// .(ID$054，CH Link(??? UNKNOWN)
+(ID$040CVVV，CH Source，C=0-5(对应A-F),VVV=000,001,002
+	000 表示CH1+CH2
+(ID$041CVVV，Crossover LCF Type
+(ID$042CVVV，Crossover LCF Freq
+(ID$043CVVV，Crossover HCF Type
+(ID$044CVVV，Crossover HCF Freq
+(ID$045CBBTTTFFFLLLQQQ，输出PEQ参数，C=0-5(通道), BB=00-02(Band)
+	TTT(type), FFF(frequency), LLL(level), QQQ(Q)
+(ID$046CBBFFF，输出PEQ frequency参数
+(ID$047CBBLLL，输出PEQ Level
+(ID$048CBBQQQ，输出PEQ Q
+(ID$049CVVV，输出PEQ 总电平
+(ID$050CVVV，Peak Limiter Threshold
+	等效于设置输出通道的compressor threshold, 但compressor ratio仍起作用
+(ID$051CVVVVVV，输出延迟
+(ID$052CVVV，相位 CH Phase
+(ID$053CVVV，输出通道静音（VVV=000静音）
+
+
+●ProgramNo
+	Indicates a decimal program number between 01 and 50. The ProgramNo data
+	used to recall that program remains unchanged in the current program data.
+●ProgramValid
+	Used to identify program availability and cannot be operated directly.
+	It is set to 0x00 (available) when the program data is stored. It changes
+	to 0xFF (unavailable) when the program data is deleted.
+●ProgramRecallLock
+	Indicates whether the program can be recalled via the SRP-F300 front panel
+	operation (0x00 for recall possible, 0xFF for recall impossible). 0x00 is
+	automatically set when the program is stored.
+●ProgramProtection
+	Overwriting is permitted when ProgramProtection is 0xFF and prohibited
+	when it is 0x00. 0x00 is automatically set when the program is stored.
+
+ProgramNo 和 ProgramValid 合并：0xff = invalid
+
+-----------------------------------------
+The data from ProgramNumber to ProgramInformation in the program data
+structure is converted into the 2-byte ASCII HEX code and returned to the PC.
+No conversion into the HEX code is performed with ProgramName data (21bytes)
+and ProgramInformation data (256bytes), both of which are written originally
+written based on the ASCII coding scheme. Accordingly, the data size is
+297bytes and indicated as 0297 using the 4-digit ASCII decimal code.
+
+PC -> SRP-F300 (01I000
+SRP-F300 -> PC 
+(01I0000297
+010000FF212628111618Default Preset.......Default program. IN-1 -> OUT-A,B,C and 
+IN-2 -> OUT-D,E,F. OUT-A/D = LF[-100Hz] OUT-B/E = MF[100Hz-1kHz] OUT-C/F = HF[1k
+Hz-] This program is permanently protected. ...................................................................................[End]
+

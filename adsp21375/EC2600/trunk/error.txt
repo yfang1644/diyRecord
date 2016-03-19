@@ -1,0 +1,26 @@
+Error Code List
+00 The remote ID is incorrect.
+02 04 The command byte is incorrect. There is no such command.
+03 An error is detected in the command argument (7th byte and after). An alphabetical letter is found in place of a numeral character.
+04 The command block contains a code other than 0x20 to 0x7D.
+
+10 The program number is incorrect.. Alphabetical characters cannot be used.
+11 The specified program number is unused(not stored.).
+12 Memory lacks the space for storing a new program.
+13 The protected program cannot be deleted or stored.
+
+Parameter Set Command
+20 The parameter index is unacceptable.
+21 The parameter value is unacceptable.
+22 The usable range of parameter values is exceeded.
+23 The index is inappropriate.
+	ex) The level needs not be set for the bandpass filter.
+24 The value of the specified parameter cannot be changed because the EQ mode
+	is different.
+
+Program Data/Information Send Command
+30 The data is incorrect.
+	ex) The ASCII characters usable for specifying parameter values are
+	limited to 0-1, A-F and a-f. The data expressed by ASCII characters
+	contains a code below 0x1F.
+

@@ -1,0 +1,72 @@
+(IDhello: 发送IDhello, 返回IDhello, 加锁, 禁止面板手动控制 (OK)
+(IDbye: 发送IDbye, 返回IDbye, 解锁 (OK)
+(IDCE or (IDCD: UNLOCK or LOCK, 无返回 (OK)
+(IDK: 返回LOCK状态 IDKE or IDKD
+(IDX: device info request, 返回 'EC2600 on ADI-21375'(OK)
+(IDY: device info send, 设置 DeviceInfo(限64字节), 并烧入 Flash的 ID分区
+(IDA: version check, 返回版本信息'Ver.0.15 Aug.01 2010'(限64字节)(OK)
+.(IDN, Update Check
+.(IDRxxx, Program Recall 
+.(IDSxxx, Program Store to FLASH
+.(IDG, Program Delete Command
+.(IDQ, Program Data Request Command
+.(IDP, Program Data Set Command
+.(IDI, Program Information Data Request
+.(IDJ, Program Information Data Set
+.(IDLE or (IDLD, Recall Lock Enable/Disable
+.(IDWE or (IDWD, Protect Enable/Disable
+.(IDME, Level Information Start/Stop 
+.(ID%xxxx, Program Parameter Value Request
+.(ID$xxxxxx, at least 10
+
+
+(ID$xxxxxx:
+
+
+ P001,
+ P002,
+ P003,
+ P004,
+ P005,
+ P006,
+ P007,	// Input Select(?)--CH source in P040
+ P010,	// .EQ Mode (PEQ or GEQ? UNKNOWN, unused)
+ P011,	// .GEQ Link
+ P012,	// .GEQ Parameter
+ P013,	// .GEQ Level
+ P014,	// .GEQ On/Off
+ P020: PEQ link
+ P021,	// PEQ Parameter Type
+ P022,	// PEQ Parameter Freq
+ P023,	// PEQ Parameter Level
+ P024,	// PEQ Parameter Q
+ P025,	// PEQ Level
+ P026,	// PEQ On/Off
+ P037,	// .Comp Link Mode
+ P027,	// .Comp On/Off
+ P032,	// .Comp Attack
+ P033,	// .Comp Release(UNKNOWN)
+ P034,	// .Comp Threshold
+ P035,	// .Comp Ratio
+ P036,	// .Comp Gain
+ P028,	// .Compressor Side EQ Type
+ P029,	// .Compressor Side EQ Freq 
+ P030,	// .Compressor Side EQ Level
+ P031,	// .Compressor Side EQ Q
+ P038: 输入通道延迟 (OK)
+ P054,	// .CH Link(??? UNKNOWN)
+ P040,	// CH Source
+ P041: Crossover 低通类型 (OK)
+ P042: Crossover 低通频率 (OK)
+ P043: Crossover 高通类型 (OK)
+ P044: Crossover 高通频率 (OK)
+ P045,	// CH PEQ Type,Freq,Level,Q
+ P046,	// CH PEQ Freq
+ P047,	// CH PEQ Level
+ P048,	// CH PEQ Q
+ P049,	// CH Level
+ P050,	// Peak Limiter Threshold
+ P051: 输出通道延迟 (OK)
+ P052: 输出通道相位	// CH Phase
+ P053: 输出通道静音 (OK)
+

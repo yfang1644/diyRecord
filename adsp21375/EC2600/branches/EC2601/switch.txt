@@ -1,0 +1,14 @@
+
+                    MUTE_E ----- P30
+                    MUTE_D ----- P29
+      MUTE_F ------ MUTE_C ----- P28
+  ENT/RECALL ------ MUTE_B ----- P27
+     DISPLAY ------ MUTE_A ----- P26
+          UP ------ MUTE_1 ----- P25
+        DOWN ------ MUTE_0 ----- P24
+          |            |
+          |            |
+          V FLG8       V FLG9
+         _|_          _|_
+         ---          ---
+ 

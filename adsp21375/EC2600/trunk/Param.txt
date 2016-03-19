@@ -1,0 +1,360 @@
+C--- Channel  B--- Band  V--- Value
+T--- Type  F--- Frequency  L--- Level  Q--- Q
+
+007:Input Select(10BYTES)				(ID$007VVV
+	000) 2-channel analog signals
+	001) 2-channel digital signals
+	002) Mono-mix signal obtained by mixing 2 analog channels
+	003) Mono-mix signal obtained by mixing 2 digital channels
+	004) Mixed analog and digital signals (2 analog channels mixed into one, with 2 digital
+		channels also mixed into one)
+
+001:Source Select(10BYTES)
+	000) Allows the use of the input signal selected by the Input Select Command.
+	001) Allows the use of the test signal selected by the Generator Select Command.
+
+002:Generator Select(10BYTES)
+	000) Selects the pink noise signal. The signal level is set by the Pink Noise Level Parameter.
+	001) Selects the sine wave signal. The frequency and level of the signal are set respectively
+		by the Sine Wave Frequency Parameter and Sine Wave Level Parameter.
+
+003:Pink Noise Level(10BYTES)
+	000 =-¡ÞdB (muted), 205=+12dB.
+	the level is indicated as -90.0 + 0.5*(parameter value) [dB].
+
+004:Sine Wave Frequency(10BYTES)
+	Usable parameter values are 001 (20Hz) to 121 (20kHz) (refer to 1/12oct).
+
+005:Sine Wave Level(10BYTES)
+	Usable parameters range from 000(-¡ÞdB) to 205(12.0dB).
+	the level is indicated as -90.0 + 0.5*(parameter value) [dB].
+
+006:Generator Muting(10BYTES)
+	To specify whether to mute the test signal or to generate it at the level set with the
+	level parameter. The Generator Muting Parameter is effective for both sine wave and pink
+	noise signals
+		000 = Muted
+		001 = The test signal is active.
+
+010:EQ Mode(10BYTES)
+	To specify which equalizer block to use; GEQ block or PEQ+Compressor
+	block.
+	000) Selects GEQ.
+	001) Selects PEQ and Compressors.
+
+011:GEQ Link(11BYTES)					(ID$011CVVV
+	To specify whether to gang the 2 channels of the GEQ block or to set them independently.
+		000) Link OFF = Parameters are set individually for channels 1 and 2.
+		001) Link ON = The parameters are always same for both channels 1 and 2.
+	When the GEQ is linked using the GEQ Link parameter, all the GEQ parameter on both channels
+	are kept in the same status. Changes made to the parameters of one channel automatically
+	cause the same changes in the other channel.
+	GEQ Link setting affects GEQ parameters, GEQ OnOff and GEQ level. When the link is switched
+	from OFF to ON, the parameter values of the channel specified using the channel select byte
+	is copied to the other. In this case,the parameter values are overwritten. The original
+	values cannot be restored even if the link is switched back to OFF. When the link is switched
+	from ON to OFF, the channel select byte has nothing to do, so select 0 (as dummy data).
+
+012:GEQ Parameter(13BYTES)				(ID$012CBBVVV
+	To adjust the levels of 31 frequency bands.
+	Usable parameters are 000 (-12.0dB) to 048(+12.0dB).
+	Level calculation is based on the following equation:
+		Level = -12.0 + 0.5*(parameter value) [dB]
+
+013:GEQ Level(11BYTES)					(ID$013CVVV
+	To adjust the overall GEQ block level irrespective of individual frequency band level settings.
+	Usable parameter values are 000 (-¡ÞdB) to 205(12.0dB).
+
+014:GEQ On/Off(11BYTES)					(ID$014CVVV
+	To turn on and off the GEQ block to allow confirmation of the equalization. The parameters of
+	each frequency band remain effective even after the GEQ block is once turned off.
+		000) GEQ OFF = Equalization inactive(Bypass)
+		001) GEQ ON = Equalization active
+
+020:PEQ Link(11BYTES)					(ID$020CVVV
+	To specify whether to gang the parameters of 2 channels or to set them independently.
+		000) Link OFF = Parameters are set individually for channels 1 and 2.
+		001) Link ON = Identical parameters are set for both channels 1 and 2.
+	When the PEQ Link Parameter is ON, all the PEQ on both channels are kept in the same status.
+	Changes made to the parameters of one channel automatically cause the same changes in the
+	other channel.
+	PEQ Link settings affect PEQ parameters, PEQ OnOff and PEQ level. When the link condition
+	is switched from OFF to ON, the parameter values of the link master channel (specified with
+	the use of the channel select function) are copied to the other, and the parameter values
+	are overwritten. The original values cannot be restored even if the link is switched back to
+	OFF. When the link is switched from ON to OFF, the channel select byte has nothing to do, so
+	select 0 (as dummy data).
+
+021:PEQ Parameter Type(22BYTES)			(ID$021CBBTTTFFFLLLQQQ
+	Select 1 for CH byte to set the parameters for channel 1. Similarly, select 2 for channel 2.
+	Selecting 0 sets the same parameters for both channels.
+	Band : 00-10
+	The following filters and equalizers are available:
+		000) Equalizer OFF
+		001) Peaking Equalizer
+		002) Bandpass Filter(level ineffective)
+		003) High-Shelving Equalizer(Q ineffective)
+		004) Low-Shelving Equalizer(Q ineffective)
+		005) Notch Filter(level ineffective)
+	Frequency:001-121
+	Level:000-048
+	Q:000-072
+	When the PEQ is linked using the PEQ Link Parameter, both channels provide exactly the same
+	control, Changes made to the parameters of one channel automatically cause the same changes
+	in the other channel.
+
+022:PEQ Parameter Freq(13BYTES)			(ID$022CBBVVV
+	To set the center frequency or turnover frequency of the PEQ.
+	Usable parameter values range from 1 (20Hz) to 121 (20kHz).
+	With the shelving type equalizers, the usable parameter values are limited as follows:
+		High-shelving: 001 (20Hz) - 110(10.6kHz)
+		Low-shelving:  012 (37.5Hz) - 121 (20kHz)
+	When 0 (OFF) is selected for the Type Parameter, setting the frequency only results in a
+	command error.	Signal processing on channels 1 and 2 is performed independently.
+	Select 1 for CH byte to set the parameters for channel 1. Similarly, select 2 for channel 2.
+	Selecting 0 provides the same parameters for channels 1 and 2, but in this case the Type
+	Parameters of both channels must be same. When the PEQ is linked using the PEQ Link Parameter,
+	both channels provide exactly the same control,
+	Changes made to the parameters of one channel automatically cause the same changes in the
+	other channel.
+
+023:PEQ Parameter Level(13BYTES)		(ID$023CBBVVV
+	To set the cut or boost level with Peaking, High-shelving and Low-shelving equalizers.
+	The command with this index can be used when it is necessary to change the Level only.
+	Usable parameter values range from 000 (-12.0dB) to 048 (12.0dB).
+	A command error occurs if you attempt to set the level when the Type is Off, Bandpass or
+	Notch. Signal processing on channels 1 and 2 is performed independently.
+	Select 1 for CH byte to set the parameters for channel 1. Similarly, select 2 for channel 2.
+	Selecting 0 provides the same parameters for channels 1 and 2, but in this case the Type
+	Parameters of both channels must be same. When the PEQ is linked using the PEQ Link
+	Parameter, both channels provide exactly the same control, Changes made to the parameters of
+	one channel automatically cause the same changes in the other channel.
+
+024:PEQ Parameter Q(13BYTES)					(ID$024CBBVVV
+	To specify the frequency bandwidth with the Peaking equalizer, Bandpass and Notch filter.
+	A command error occurs if you attempt to set the Q value when the Type is Off, High-shelving
+	and Low-shelving.
+	The command with this index can be used when it is necessary to change the Q only.
+	Usable parameter values range from 000 (0.31) to 072 (19.4).
+
+025:PEQ Level(11BYTES)					(ID$025CVVV
+	To adjust the overall PEQ block level irrespective of individual frequency band level settings.
+	Usable parameter values are 000 (-¡ÞdB) to 205(12.0dB).
+	The PEQ Level Parameter remains unaffected by the PEQ OnOff Parameter.
+
+026:PEQ On/Off(11BYTES)					(ID$026CVVV
+	To turn on and off the PEQ block to allow confirmation of equalization. The parameters of each
+	band remain effective even after the PEQ block is once turned off.
+		000) PEQ OFF = Equalization inactive(Bypass)
+		001) PEQ ON = Equalization active
+	Signal processing on channels 1 and 2 is performed independently. Select 1 for CH to set the
+	parameters for channel 1. Similarly, select 2 for channel 2. Selecting 0 sets the same
+	parameters for both channels. When the PEQ is linked using the PEQ Link Parameter, both
+	channels provide exactly the same control.
+	Changes made to the parameters of one channel automatically cause the same changes in the
+	other channel.
+
+037:Comp Link Mode(10BYTES)				(ID$037VVV
+	To specify how to gang the 2-channel compressors.
+	Usable parameter values are 000 to 003.
+		000) INDIVIDUAL. The two compressors operate independently.
+			All parameters must be set individually for each compressor.
+		001) LINK(STEREO). Both compressors provide the same gain reduction.
+			Gain reduction is calculated based on the level of the mixed
+			channel 1 and channel 2 signals and performed in accordance with
+			the parameters set for channel 1. Adjustment of the parameters
+			for Compressor 2 is disabled.
+		002) LINK (IN-1).Both compressors provide the same gain reduction.
+			Gain reduction is calculated based on the level of channel 1
+			signal and performed in accordance with the parameters set for
+			channel 1. The parameters for channel 2 are ineffective.
+		003) LINK(IN-2). Both compressors provide the same gain reduction.
+			Gain reduction is calculated based on the level of channel 2
+			signal and performed in accordance with the parameters set for
+			channel 2. The parameters for channel 2 are ineffective.
+
+027:Comp On/Off
+	Used to turn on and off the compressors.
+		000) Compressor ON
+		001) Compressor OFF
+	When the link mode is 0 (INDIVIDUAL), both compressors must be turned on or off individually.
+	When the link mode 1 (LINK STEREO) or 2 (LINK IN-1) is selected, turning on or off the
+	channel 1 simultaneously controls the channel 2. When the link mode 3 (LINK IN-2) is
+	selected, turning on or off the channel 2 simultaneously controls the channel 1.
+
+032:Comp Attack(11BYTES)				(ID$032CVVV
+	Used for level detection, the Comp Attack Parameter determines the compressor response speed
+	to increasing signal level. Naturally, the shorter the attack time, the faster the response.
+	Usable parameter values range from 000 (0.01msec) to 060 (1000msec).
+	The signal level is detected independently for channels 1 and 2, making it possible to set
+	the parameters also independently for each channel. Select 1 for CH byte to set the
+	parameters for channel 1. Similarly, select 2 for channel 2. Selecting 0 sets the same
+	parmeters for both channels.
+	However, the channel in use for setting must be specified by CH byte according to the Comp
+	Link Mode setting. Otherwise, the changes will not be reflected on the sound.
+
+033:Comp Release(11BYTES)				(ID$033CVVV
+	The Comp Release Parameter is also related to level detection and used to determine the
+	compressor response speed to decreasing signal level. Naturally, the shorter the release
+	time, the faster the response. Usable parameter values range from 000 (1msec) to 048
+	(10000msec).
+
+034:Comp Threshold(11BYTES)				(ID$034CVVV
+	Allows adjustment of the signal level for activating gain reduction.
+	Usable parameter values are 000 (0.0dBFS) to 096 (-48.0dBFS).
+	The actual level is expressed by -0.5*(parameter value) [dBFS].
+		Note) [dBFS] represents the decibel level in the digital domain expressed in
+		proportion to the full scale level of the A/D and D/A converters.
+	The channel in use for setting must be specified by CH byte according to the Comp Link Mode
+	setting. Otherwise, the changes will not be reflected on the sound.
+
+035:Comp Ratio(11BYTES)					(ID$035CVVV
+	Allows adjustment of the ratio for the gain reduction for the signal exceeding the
+	threshold level. (The greater the ratio, the greater the gain reduction.)
+	Usable parameter values are 000 (1:1) to 100 ( ¡Þ:1).
+	The ratio is calculated by the following equation:
+		1/(1-(parameter value)/100):1
+	Note) When the ratio is set at 1:1, no reduction occurs regardless of threshold and other
+	settings. The channel in use for setting must be specified by CH byte according to the
+	Comp Link Mode setting. Otherwise, the changes will not be reflected on the sound.
+
+036:Comp Gain(11BYTES)					(ID$036CVVV
+	To control the level after it has been compressed.
+	Up to +30dB gain make-up is possible.
+	Usable parameter values are 000 (-¡ÞdB) to 241 (30.0dB).
+					0 = -¡ÞdB (muted)
+				1-241 = -90.0 + 0.5*(parameter value) dB
+	Unless INDIVIDUAL is selected for the Comp Link, both channels provide exactly the same
+	gain make-up, changes made to the parameters of one channel automatically cause the same
+	changes in the other channel.
+
+028:Compressor SideEQ Type(20BYTES)		(ID$028CTTTFFFLLLQQQ
+	Designed into the level detection circuit, the side chain equalizer enables compression of
+	a specific frequency range. Usable parameter values are 000 to 005:
+		000) Equalizer OFF
+		001) Peaking Equalizer
+		......
+		005) Notch Filter (level ineffective).
+
+029:Compressor SideEQ Freq(11BYTES)		(ID$029CVVV
+	Used to set the center frequency or turnover frequency of the side equalizer. When it is
+	necessary to change the frequency only, the command is sent using this index.
+
+030:Compressor SideEQ Level(11BYTES)	(ID$030CVVV
+
+031:Compressor SideEQ Q(11BYTES)		(ID$031CVVV
+
+038:Master Delay(14BYTES)				(ID$038CVVVVVV
+	To set the delay time for two master channels.
+	The delay time is expressed by the number of samplings(words).
+	The adjustable range is 0 to 131071[samplings].
+	The built-in sampling frequency is 96kHz. This means that the sampling period is equivalent
+	to approx. 10.4 microseconds.
+
+	Basically, the final amount of delay is computed by adding the master delay time to the
+	channel delay time. When MIX is selected for the CH Source Parameter, however, the master
+	delay time is not added and the channel delay time becomes the final delay time.
+
+054:CH Link(22BYTES)			(ID$054VVV VVV VVV VVV VVV
+					        A   B   C   D   E
+	To specify how to link the output channels.
+	The linked channels operate in exactly the same condition.
+	Changes made to one of the linked channel's parameters are immediately reflected on other.
+	The CH Link Parameter uses 1 byte per each channel to represent the link status of the six
+	output channels. The first 2 bits are dummy bits. The rest bits correspond to OUT-A to OUT-F
+	(from 3rd to 8th, one bit for each channel).
+	Linked channels are indicated by "1". Non-linked channels are indicated by "0".
+	ex 1) When all channels are independent
+		CH Link of OUT-A = 0x20 = 00100000
+		CH Link of OUT-B = 0x10 = 00010000
+		CH Link of OUT-C = 0x08 = 00001000
+		CH Link of OUT-D = 0x04 = 00000100
+		CH Link of OUT-E = 0x02 = 00000010
+		CH Link of OUT-F = 0x01 = 00000001
+	ex 2) When linking OUT-A with D, B with E, and C with F after assigning OUT-A, B and C to
+		the low, mid and high ranges of CH-1 of a 3-way stereo speaker system and OUT-D,
+		E and F to the same of CH-2.
+		CH Link of OUT-A = 0x24 = 00100100
+	 	CH Link of OUT-B = 0x12 = 00010010
+		CH Link of OUT-C = 0x09 = 00001001
+		CH Link of OUT-D = 0x24 = 00100100
+		CH Link of OUT-E = 0x12 = 00010010
+		CH Link of OUT-F = 0x09 = 00001001
+
+	The status of OUT-F is automatically determined if the CH Link Parameter for OUT-A through
+	OUT-E are specified. That's why the CH Link Command contains the values for OUT-A to OUT-E
+	only. The values are specified in the form of ASCII decimal data.
+	As explained, the parameter value of linked channels is bound to be the same.When different
+	values are detected, the SRP-F300 performs automatic correction. The value of the channel
+	with lower priority is considered incorrect and replaced by the value of the channel with
+	higher priority. (OUT-A has the highest channel priority, with OUT-E the lowest.)
+
+040:CH Source(11BYTES)					(ID040CVVV
+	To select the sound source signal from the two master channel signals.
+		000) Mixed signal (channel 1 and 2 signals equally mixed)
+		001) Channel 1 signal
+		002) Channel 2 signal
+	In the position of the CH byte, write 0 to 5 instead of A to F.
+	Note 1) The master delay setting has no effect when 0 (mixed signal) is
+	selected. Delay time depends solely on the channel delay setting.
+	Using the channel link function, the same CH Source Parameter value can be
+	set for multiple channels.
+
+041:Crossover LCF Type(11BYTES)			(ID041CVVV
+	To select the type (order and roll-off characteristics) of the low-cut filter.
+		000) Butterworth, 2nd order (-12dB/oct)
+		001) Butterworth, 3rd order (-18dB/oct)
+		......
+		008) Bessel, 5th order (-30dB/oct)
+		009) Bessel, 6th order (-36dB/oct)
+		010) Linkwitz-Riley, 2nd order (-12dB/oct)
+		011) Linkwitz-Riley, 4th order (-24dB/oct)
+	In the position of the CH byte, write 0 to 5 instead of A to F.
+	Symmetric frequency control can be achieved by selecting the same type for
+	both low-cut and high-cut filters.
+	To deactivate the filter, select 000 (OFF) for the LCF Freq Parameter. Using the channel
+	link function, the same LCF Type parameter can be set for multiple channels.
+
+042:Crossover LCF Freq(11BYTES)			(ID042CVVV
+	To set the cut-off frequency of the low-cut filter.
+	Usable parameter values are 000 (OFF) and 001 (20Hz) to 121 (20kHz).
+	Butterworth and Bessel type filters provide a 3dB cut at the cut-off frequency. With the
+	Linkwitz-Riley type filters, this is doubled to 6dB.
+
+043:Crossover HCF Type(11BYTES)			(ID043CVVV
+044:Crossover HCF Freq(11BYTES)			(ID044CVVV
+045:CH PEQ Type(22BYTES)				(ID045CBBTTTFFFLLLQQQ
+	In the position of the CH byte, write 0 to 5 instead of A to F.
+	The three bands must be described as 00, 01 or 02.
+	Using the channel link function, the same CH PEQ parameter can be set for multiple channels.
+
+046:CH PEQ Freq(13BYTES)				(ID046CBBVVV
+047:CH PEQ Level(13BYTES)				(ID047CBBVVV
+048:CH PEQ Q(13BYTES)					(ID048CBBVVV
+049:CH Level(11BYTES)					(ID049CVVV
+	Allows level adjustment of each output channel.
+	Usable parameter values are 000 (-¡ÞdB) to 205 (12.0dB).
+
+050:Peak Limiter Threshold
+	To set the peak limiter threshold level for each channel.
+	Usable parameter values are 000 (OFF) to 053 (-20.0dBFS).
+		000) OFF (no peak limiting)
+		001-053) 6.0 - 0.5*(parameter value - 1) dB
+	In the position of the CH byte, write 0 to 5 instead of A to F.
+	Note) dBFS represents the decibel level in the digital domain expressed in proportion to
+	the full scale level (clipping level) of the A/D and D/A converters. Due to the ample
+	headroom secured above the full scale level of the A/D and D/A converters, the threshold
+	can be set even at a level above 0.0dBSF.
+
+051:CH Delay(14BYTES)					(ID$051CVVVVVV
+052:CH Phase(11BYTES)					(ID$052CVVV
+	To change the phase (normal/inverse) of each channel's signal.
+		000) Normal
+		001) Inverse(180)
+
+053:CH Muting(11BYTES)					(ID$053CVVV
+	Capable of muting the output signals individually, the CH Muting Parameter provides a
+	convenient way of achieving automatic fade in/out.
+		000) On (Muted)
+		001) Off (Output active)
+
